@@ -1,31 +1,31 @@
-package services
+package helper
 
 import (
 	"fmt"
-	"spamtrawler/helper"
-	"spamtrawler/repository"
-	"spamtrawler/repository/models"
+	"log"
+	"os"
+	"path/filepath"
+	"spamtrawler/app/models"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/spf13/viper"
-
-	"github.com/labstack/gommon/log"
 )
 
-var DB *mongo.Database
-var Configuration models.Configuration
 var RootDirectory string
+var Configuration models.Configuration
 
-func init() {
-	RootDirectory = helper.GetRootDirectory()
-	Configuration = readInConfig()
-	DB = repository.GetDbConnection(Configuration)
+func GetRootDirectory() string {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return dir
 }
 
-func readInConfig() models.Configuration {
+func ReadInConfig() models.Configuration {
 	viper.SetConfigName("config")
-	viper.AddConfigPath(RootDirectory + "/files/")
+	viper.AddConfigPath(GetRootDirectory() + "/files/")
 
 	viper.WatchConfig()
 
@@ -33,7 +33,7 @@ func readInConfig() models.Configuration {
 	 * ToDo: Reload Config on change
 	 */
 	viper.OnConfigChange(func(e fsnotify.Event) {
-		readInConfig()
+		ReadInConfig()
 		fmt.Println("Config file changed: ", e.Name)
 	})
 

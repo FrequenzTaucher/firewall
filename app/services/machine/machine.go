@@ -1,7 +1,7 @@
 package services
 
 import (
-	"spamtrawler/repository/models"
+	"spamtrawler/app/models"
 	"strings"
 
 	"github.com/avct/uasurfer"

@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"spamtrawler/app/services"
+	"spamtrawler/app"
+	"spamtrawler/app/models"
 	firewall "spamtrawler/app/services/firewall/filter"
 	geoip "spamtrawler/app/services/geoip"
 	machine "spamtrawler/app/services/machine"
-	"spamtrawler/repository/models"
 
 	"github.com/spf13/viper"
 
@@ -25,12 +25,12 @@ func RouteHandler(e *echo.Echo) {
 			return
 		}
 
-		if d.ApiKey == services.Configuration.Auth.ApiKey {
-			fmt.Println(services.Configuration.Environment.Mode)
+		if d.ApiKey == app.Configuration.Auth.ApiKey {
+			fmt.Println(app.Configuration.Environment.Mode)
 
 			//e.Logger.Debug(d)
-			visitorGeoData := geoip.GetGeoDataFromIp(services.RootDirectory, d.IpAddress)
-			visitorNetworkData := geoip.GetNetworkDataFromIp(services.RootDirectory, d.IpAddress)
+			visitorGeoData := geoip.GetGeoDataFromIp(app.RootDirectory, d.IpAddress)
+			visitorNetworkData := geoip.GetNetworkDataFromIp(app.RootDirectory, d.IpAddress)
 			machineData := machine.GetMachineData(d.UserAgent)
 
 			blockedFlag := false

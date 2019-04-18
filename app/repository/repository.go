@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
-	"spamtrawler/repository/models"
+	"spamtrawler/app/models"
 	"time"
 
 	"github.com/labstack/gommon/log"

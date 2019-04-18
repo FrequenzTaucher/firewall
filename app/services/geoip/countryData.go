@@ -3,7 +3,7 @@ package services
 import (
 	"log"
 	"net"
-	"spamtrawler/repository/models"
+	"spamtrawler/app/models"
 
 	"github.com/oschwald/geoip2-golang"
 )
