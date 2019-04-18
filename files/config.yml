@@ -1,0 +1,11 @@
+database:
+  connectionUri: "test"
+
+Auth:
+  apikey: "test"
+
+server:
+  port: 1232
+
+environment:
+    mode: dev
