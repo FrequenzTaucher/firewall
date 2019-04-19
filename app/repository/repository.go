@@ -10,9 +10,9 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
-var DB *mongo.Database
+var MongoDB *mongo.Database
 
-func GetDbConnection(configuration models.Configuration) *mongo.Database {
+func MongoGetDbConnection(configuration models.Configuration) *mongo.Database {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	db, err := mongo.Connect(ctx, "mongodb://localhost:27017")
 
@@ -27,9 +27,10 @@ func GetDbConnection(configuration models.Configuration) *mongo.Database {
 		log.Fatal(err)
 	}
 
-	DB = db.Database("local")
+	MongoDB = db.Database("local")
 
+	fmt.Println(configuration)
 	fmt.Println("Connected to MongoDB!")
 
-	return DB
+	return MongoDB
 }

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"spamtrawler/app"
+	firewall "spamtrawler/app/controller/firewall/filter"
 	"spamtrawler/app/models"
-	firewall "spamtrawler/app/services/firewall/filter"
 	geoip "spamtrawler/app/services/geoip"
 	machine "spamtrawler/app/services/machine"
 

@@ -39,7 +39,7 @@ func CreateAsn(c echo.Context) (err error) {
 		return
 	}
 
-	collection := app.DB.Collection("asn")
+	collection := app.MongoDB.Collection("asn")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result, _ := collection.InsertOne(ctx, d)
 
@@ -50,7 +50,7 @@ func CreateAsn(c echo.Context) (err error) {
 
 func GetAllAsn(c echo.Context) error {
 	var asns []ASN
-	collection := app.DB.Collection("asn")
+	collection := app.MongoDB.Collection("asn")
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
@@ -82,7 +82,7 @@ func GetAsn(c echo.Context) (err error) {
 	}
 
 	var asn ASN
-	collection := app.DB.Collection("asn")
+	collection := app.MongoDB.Collection("asn")
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	err = collection.FindOne(ctx, ASN{ID: d.ID}).Decode(&asn)
 	if err != nil {
@@ -103,7 +103,7 @@ func DeleteAsn(c echo.Context) (err error) {
 	}
 
 	var asn ASN
-	collection := app.DB.Collection("asn")
+	collection := app.MongoDB.Collection("asn")
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	err = collection.FindOneAndDelete(ctx, ASN{ID: d.ID}).Decode(&asn)
 	if err != nil {
@@ -123,7 +123,7 @@ func UpdateAsn(c echo.Context) (err error) {
 		return
 	}
 
-	collection := app.DB.Collection("asn")
+	collection := app.MongoDB.Collection("asn")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result, err := collection.UpdateOne(
 		ctx,
