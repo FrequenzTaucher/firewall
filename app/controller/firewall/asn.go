@@ -3,17 +3,15 @@ package firewall
 import (
 	"encoding/json"
 	"net/http"
+	"spamtrawler/app/models"
 	"spamtrawler/app/repository"
 
+	"github.com/mongodb/mongo-go-driver/bson"
+
 	"github.com/labstack/echo"
-	"github.com/mongodb/mongo-go-driver/bson/primitive"
 )
 
-type ASN struct {
-	ID     primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	ASN    string             `json:"asn,omitempty" bson:"asn,omitempty"`
-	STATUS string             `json:"status,omitempty" bson:"status,omitempty"`
-}
+var asnCollectionName = "asn"
 
 func FilterAsn(asn uint) bool {
 	asnList := make(map[uint]struct{})
@@ -29,7 +27,21 @@ func FilterAsn(asn uint) bool {
 }
 
 func CreateAsn(c echo.Context) (err error) {
-	result, err := repository.CreateAsn(c)
+
+	d := new(models.ASN)
+
+	if err = c.Bind(d); err != nil {
+		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		return json.NewEncoder(c.Response()).Encode(err)
+	}
+
+	data := bson.D{
+		{"asn", d.ASN},
+		{"status", d.STATUS},
+	}
+
+	result, err := repository.CreateAsn(asnCollectionName, data)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -43,7 +55,7 @@ func CreateAsn(c echo.Context) (err error) {
 }
 
 func GetAllAsn(c echo.Context) error {
-	result, err := repository.GetAllAsn(c)
+	result, err := repository.GetAllAsn(asnCollectionName, c)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -57,7 +69,8 @@ func GetAllAsn(c echo.Context) error {
 }
 
 func GetAsn(c echo.Context) (err error) {
-	result, err := repository.GetAsn(c)
+
+	result, err := repository.GetAsn(asnCollectionName, c)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -71,7 +84,7 @@ func GetAsn(c echo.Context) (err error) {
 }
 
 func DeleteAsn(c echo.Context) (err error) {
-	result, err := repository.DeleteAsn(c)
+	result, err := repository.DeleteAsn(asnCollectionName, c)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -85,7 +98,20 @@ func DeleteAsn(c echo.Context) (err error) {
 }
 
 func UpdateAsn(c echo.Context) (err error) {
-	result, err := repository.UpdateAsn(c)
+	d := new(models.ASN)
+
+	if err = c.Bind(d); err != nil {
+		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		return json.NewEncoder(c.Response()).Encode(err)
+	}
+
+	data := bson.D{
+		{"asn", d.ASN},
+		{"status", d.STATUS},
+	}
+
+	result, err := repository.UpdateAsn(asnCollectionName, d.ID, data)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)

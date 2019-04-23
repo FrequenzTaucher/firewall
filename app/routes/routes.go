@@ -58,20 +58,38 @@ func RouteHandler(e *echo.Echo) {
 		//return c.JSON(http.StatusOK, data)
 	})
 
-	e.GET("/getAllAsn", func(c echo.Context) (err error) {
-		return firewall.GetAllAsn(c)
-	})
-	e.GET("/getAsn/:id", func(c echo.Context) (err error) {
-		return firewall.GetAsn(c)
-	})
-	e.GET("/deleteAsn/:id", func(c echo.Context) (err error) {
-		return firewall.DeleteAsn(c)
-	})
-	e.POST("/createAsn", func(c echo.Context) (err error) {
+	asn := e.Group("/asn")
+	asn.POST("/create", func(c echo.Context) (err error) {
 		return firewall.CreateAsn(c)
 	})
-	e.POST("/updateAsn", func(c echo.Context) (err error) {
+	asn.GET("/get/:id", func(c echo.Context) (err error) {
+		return firewall.GetAsn(c)
+	})
+	asn.GET("/all", func(c echo.Context) (err error) {
+		return firewall.GetAllAsn(c)
+	})
+	asn.POST("/update", func(c echo.Context) (err error) {
 		return firewall.UpdateAsn(c)
+	})
+	asn.GET("/delete/:id", func(c echo.Context) (err error) {
+		return firewall.DeleteAsn(c)
+	})
+
+	country := e.Group("/country")
+	country.POST("/create", func(c echo.Context) (err error) {
+		return firewall.CreateCountry(c)
+	})
+	country.GET("/get/:id", func(c echo.Context) (err error) {
+		return firewall.GetCountry(c)
+	})
+	country.GET("/all", func(c echo.Context) (err error) {
+		return firewall.GetAllCountry(c)
+	})
+	country.POST("/update", func(c echo.Context) (err error) {
+		return firewall.UpdateCountry(c)
+	})
+	country.GET("/delete/:id", func(c echo.Context) (err error) {
+		return firewall.DeleteCountry(c)
 	})
 
 	// Start server
