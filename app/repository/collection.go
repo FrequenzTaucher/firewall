@@ -13,7 +13,7 @@ import (
 	"github.com/mongodb/mongo-go-driver/bson/primitive"
 )
 
-func CreateAsn(collectionName string, d bson.D) (result *mongo.InsertOneResult, err error) {
+func CreateCollectionItem(collectionName string, d bson.D) (result *mongo.InsertOneResult, err error) {
 
 	collection := MongoDB.Collection(collectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
@@ -23,10 +23,11 @@ func CreateAsn(collectionName string, d bson.D) (result *mongo.InsertOneResult, 
 
 }
 
-func GetAllAsn(collectionName string, c echo.Context) ([]bson.M, error) {
+func GetAllCollectionItems(collectionName string, c echo.Context) ([]bson.M, error) {
 	var asns []bson.M
 
 	collection := MongoDB.Collection(collectionName)
+
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
@@ -34,6 +35,7 @@ func GetAllAsn(collectionName string, c echo.Context) ([]bson.M, error) {
 		_, _ = c.Response().Write([]byte(`{ "message": "` + err.Error() + `" }`))
 		return nil, err
 	}
+
 	defer cursor.Close(ctx)
 	for cursor.Next(ctx) {
 		var asn bson.M
@@ -48,11 +50,11 @@ func GetAllAsn(collectionName string, c echo.Context) ([]bson.M, error) {
 	return asns, err
 }
 
-func GetAsn(collectionName string, c echo.Context) (result bson.M, err error) {
+func GetCollectionItemById(collectionName string, c echo.Context) (result bson.M, err error) {
 
-	id, err := primitive.ObjectIDFromHex(c.Param(collectionName))
+	id, err := primitive.ObjectIDFromHex(c.Param("id"))
 
-	collection := MongoDB.Collection("asn")
+	collection := MongoDB.Collection(collectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	err = collection.FindOne(ctx, bson.M{"_id": id}).Decode(&result)
 	if err != nil {
@@ -63,11 +65,11 @@ func GetAsn(collectionName string, c echo.Context) (result bson.M, err error) {
 	return result, nil
 }
 
-func DeleteAsn(collectionName string, c echo.Context) (result bson.M, err error) {
+func DeleteCollectionItemById(collectionName string, c echo.Context) (result bson.M, err error) {
 
-	id, err := primitive.ObjectIDFromHex(c.Param(collectionName))
+	id, err := primitive.ObjectIDFromHex(c.Param("id"))
 
-	collection := MongoDB.Collection("asn")
+	collection := MongoDB.Collection(collectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	err = collection.FindOneAndDelete(ctx, bson.M{"_id": id}).Decode(&result)
 	if err != nil {
@@ -78,7 +80,7 @@ func DeleteAsn(collectionName string, c echo.Context) (result bson.M, err error)
 	return result, nil
 }
 
-func UpdateAsn(collectionName string, id primitive.ObjectID, data bson.D) (result *mongo.UpdateResult, err error) {
+func UpdateCollectionItemById(collectionName string, id primitive.ObjectID, data bson.D) (result *mongo.UpdateResult, err error) {
 	collection := MongoDB.Collection(collectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result, err = collection.UpdateOne(

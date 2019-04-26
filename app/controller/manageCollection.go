@@ -1,4 +1,4 @@
-package firewall
+package controller
 
 import (
 	"encoding/json"
@@ -11,9 +11,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-var asnCollectionName = "asn"
-
-func FilterAsn(asn uint) bool {
+/*func FilterAsn(asn uint) bool {
 	asnList := make(map[uint]struct{})
 	asnList[432489] = struct{}{}
 
@@ -24,9 +22,9 @@ func FilterAsn(asn uint) bool {
 	_, found := asnList[asn]
 
 	return found
-}
+}*/
 
-func CreateAsn(c echo.Context) (err error) {
+func CreateCollectionItem(c echo.Context) (err error) {
 
 	d := new(models.ASN)
 
@@ -41,7 +39,7 @@ func CreateAsn(c echo.Context) (err error) {
 		{"status", d.STATUS},
 	}
 
-	result, err := repository.CreateAsn(asnCollectionName, data)
+	result, err := repository.CreateCollectionItem(c.Param("collection"), data)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -54,8 +52,8 @@ func CreateAsn(c echo.Context) (err error) {
 	return json.NewEncoder(c.Response()).Encode(result)
 }
 
-func GetAllAsn(c echo.Context) error {
-	result, err := repository.GetAllAsn(asnCollectionName, c)
+func GetAllCollectionItems(c echo.Context) error {
+	result, err := repository.GetAllCollectionItems(c.Param("collection"), c)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -68,23 +66,9 @@ func GetAllAsn(c echo.Context) error {
 	return json.NewEncoder(c.Response()).Encode(result)
 }
 
-func GetAsn(c echo.Context) (err error) {
+func GetCollectionItemById(c echo.Context) (err error) {
 
-	result, err := repository.GetAsn(asnCollectionName, c)
-
-	if err != nil {
-		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
-		c.Response().WriteHeader(http.StatusInternalServerError)
-		return json.NewEncoder(c.Response()).Encode(err)
-	}
-
-	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
-	c.Response().WriteHeader(http.StatusOK)
-	return json.NewEncoder(c.Response()).Encode(result)
-}
-
-func DeleteAsn(c echo.Context) (err error) {
-	result, err := repository.DeleteAsn(asnCollectionName, c)
+	result, err := repository.GetCollectionItemById(c.Param("collection"), c)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
@@ -97,7 +81,21 @@ func DeleteAsn(c echo.Context) (err error) {
 	return json.NewEncoder(c.Response()).Encode(result)
 }
 
-func UpdateAsn(c echo.Context) (err error) {
+func DeleteCollectionItemById(c echo.Context) (err error) {
+	result, err := repository.DeleteCollectionItemById(c.Param("collection"), c)
+
+	if err != nil {
+		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		return json.NewEncoder(c.Response()).Encode(err)
+	}
+
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+	c.Response().WriteHeader(http.StatusOK)
+	return json.NewEncoder(c.Response()).Encode(result)
+}
+
+func UpdateCollectionItemById(c echo.Context) (err error) {
 	d := new(models.ASN)
 
 	if err = c.Bind(d); err != nil {
@@ -111,7 +109,7 @@ func UpdateAsn(c echo.Context) (err error) {
 		{"status", d.STATUS},
 	}
 
-	result, err := repository.UpdateAsn(asnCollectionName, d.ID, data)
+	result, err := repository.UpdateCollectionItemById(c.Param("collection"), d.ID, data)
 
 	if err != nil {
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
