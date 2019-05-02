@@ -12,7 +12,7 @@ import (
 
 var MongoDB *mongo.Database
 
-func MongoGetDbConnection(configuration models.Configuration) *mongo.Database {
+func MongoGetDbConnection(configuration *models.Configuration) *mongo.Database {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	db, err := mongo.Connect(ctx, "mongodb://localhost:27017")
 

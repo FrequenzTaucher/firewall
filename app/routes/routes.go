@@ -51,23 +51,21 @@ func RouteHandler(e *echo.Echo) {
 			//return c.JSON(http.StatusOK, data)
 		})*/
 
-	asn := e.Group("/manage")
-	asn.POST("/:collection/create", func(c echo.Context) (err error) {
-		return controller.CreateCollectionItem(c)
+	firewallListController := e.Group("/manage")
+	firewallListController.POST("/:collection/create", func(c echo.Context) (err error) {
+		return controller.CreateFirewallListItem(c)
 	})
-	asn.GET("/:collection/get/:id", func(c echo.Context) (err error) {
-		return controller.GetCollectionItemById(c)
+	firewallListController.GET("/:collection/get/:id", func(c echo.Context) (err error) {
+		return controller.GetFirewallListItemById(c)
 	})
-	asn.GET("/:collection/all", func(c echo.Context) (err error) {
-		return controller.GetAllCollectionItems(c)
+	firewallListController.GET("/:collection/all", func(c echo.Context) (err error) {
+		return controller.GetAllFirewallListItems(c)
 	})
-	asn.PUT("/:collection/update", func(c echo.Context) (err error) {
-		return controller.UpdateCollectionItemById(c)
+	firewallListController.PUT("/:collection/update", func(c echo.Context) (err error) {
+		return controller.UpdateFirewallListItemById(c)
 	})
-	asn.DELETE("/:collection/delete/:id", func(c echo.Context) (err error) {
-		return controller.DeleteCollectionItemById(c)
+	firewallListController.DELETE("/:collection/delete/:id", func(c echo.Context) (err error) {
+		return controller.DeleteFirewallListItemById(c)
 	})
 
-	// Start server
-	e.Logger.Fatal(e.Start(":1232"))
 }

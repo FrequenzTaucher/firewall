@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 	"spamtrawler/app"
 	"spamtrawler/app/routes"
 
@@ -22,10 +22,18 @@ func main() {
 	e := echo.New()
 
 	// Middleware
-	//e.Use(middleware.Logger())
+	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	fmt.Println(app.MongoDB)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
+
+	app.Start()
 
 	routes.RouteHandler(e)
+
+	// Start server
+	e.Logger.Fatal(e.Start(":1232"))
 }

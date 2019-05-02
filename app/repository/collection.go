@@ -80,13 +80,13 @@ func DeleteCollectionItemById(collectionName string, c echo.Context) (result bso
 	return result, nil
 }
 
-func UpdateCollectionItemById(collectionName string, id primitive.ObjectID, data bson.D) (result *mongo.UpdateResult, err error) {
+func UpdateCollectionItemById(collectionName string, c echo.Context, data bson.D) (result *mongo.UpdateResult, err error) {
 	collection := MongoDB.Collection(collectionName)
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result, err = collection.UpdateOne(
 		ctx,
 		bson.D{
-			{"_id", id},
+			{"_id", c.Param("id")},
 		},
 		bson.D{
 			{"$set", data},

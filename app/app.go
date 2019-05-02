@@ -21,7 +21,16 @@ var RootDirectory string
 func init() {
 	RootDirectory = GetRootDirectory()
 	Configuration = ReadInConfig()
-	MongoDB = repository.MongoGetDbConnection(Configuration)
+
+	fmt.Println(Configuration)
+
+	MongoDB = repository.MongoGetDbConnection(&Configuration)
+
+	fmt.Println(MongoDB)
+}
+
+func Start() {
+	fmt.Println("App Started!")
 }
 
 func GetRootDirectory() string {
