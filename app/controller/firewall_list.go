@@ -3,8 +3,8 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"spamtrawler/app/models"
 	"spamtrawler/app/repository"
-	"spamtrawler/app/services"
 
 	"github.com/mongodb/mongo-go-driver/bson"
 
@@ -26,10 +26,15 @@ import (
 
 func CreateFirewallListItem(c echo.Context) (err error) {
 
-	data, err := services.PrepareGenericFirewallListDataForCollection(c)
+	d := new(models.GenericFirewallItem)
 
-	if err != nil {
+	if err = c.Bind(d); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	data := bson.D{
+		{"value", d.VALUE},
+		{"status", d.STATUS},
 	}
 
 	result, err := repository.CreateCollectionItem(c.Param("collection"), data)
@@ -51,11 +56,11 @@ func GetAllFirewallListItems(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	data := map[string][]bson.M{"data": result}
+	//data := map[string][]bson.M{"data": result}
 
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 	c.Response().WriteHeader(http.StatusOK)
-	return json.NewEncoder(c.Response()).Encode(data)
+	return json.NewEncoder(c.Response()).Encode(result)
 }
 
 func GetFirewallListItemById(c echo.Context) (err error) {
@@ -86,9 +91,22 @@ func DeleteFirewallListItemById(c echo.Context) (err error) {
 
 func UpdateFirewallListItemById(c echo.Context) (err error) {
 
-	data, err := services.PrepareGenericFirewallListDataForCollection(c)
+	d := new(models.GenericFirewallItem)
 
-	result, err := repository.UpdateCollectionItemById(c.Param("collection"), c, data)
+	if err = c.Bind(d); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	id := bson.D{
+		{"_id", d.ID},
+	}
+
+	data := bson.D{
+		{"value", d.VALUE},
+		{"status", d.STATUS},
+	}
+
+	result, err := repository.UpdateCollectionItemById(c.Param("collection"), c, id, data)
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

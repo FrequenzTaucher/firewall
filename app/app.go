@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"spamtrawler/app/models"
 	"spamtrawler/app/repository"
 
@@ -16,10 +15,8 @@ import (
 
 var MongoDB *mongo.Database
 var Configuration models.Configuration
-var RootDirectory string
 
 func init() {
-	RootDirectory = GetRootDirectory()
 	Configuration = ReadInConfig()
 
 	fmt.Println(Configuration)
@@ -34,7 +31,8 @@ func Start() {
 }
 
 func GetRootDirectory() string {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	dir, err := os.Getwd()
+	//dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		log.Fatal(err)
 	}

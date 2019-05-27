@@ -5,6 +5,8 @@ import NotFoundView from './components/404.vue'
 // Import Views - Dash
 import DashboardView from './components/views/Dashboard.vue'
 import TablesView from './components/views/Tables.vue'
+import AsnTableView from './components/views/TableAsns.vue'
+import CountriesTableView from './components/views/TableCountries.vue'
 import TasksView from './components/views/Tasks.vue'
 import SettingView from './components/views/Setting.vue'
 import AccessView from './components/views/Access.vue'
@@ -22,10 +24,16 @@ const routes = [
     component: DashView,
     children: [
       {
-        path: '/manage/:collection/all',
-        component: TablesView,
-        name: 'Firewall List',
-        meta: {description: 'Simple and advance table in CoPilot'}
+        path: '/manage/asns/all',
+        component: AsnTableView,
+        name: 'ASN Filter List',
+        meta: {description: ''}
+      },
+      {
+        path: '/manage/countries/all',
+        component: CountriesTableView,
+        name: 'Country Filter List',
+        meta: {description: ''}
       },
       {
         path: 'dashboard',

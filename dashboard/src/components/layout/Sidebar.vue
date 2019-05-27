@@ -4,21 +4,6 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
 
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel">
-        <div class="pull-left image">
-          <img :src="user.avatar" />
-        </div>
-        <div class="pull-left info">
-          <div>
-            <p class="white">{{user.displayName}}</p>
-          </div>
-          <a href="javascript:;">
-            <i class="fa fa-circle text-success"></i> Online
-          </a>
-        </div>
-      </div>
-
       <!-- search form (Optional) -->
       <form v-on:submit.prevent class="sidebar-form" id="searchForm">
         <div class="input-group" id="searchContainer">

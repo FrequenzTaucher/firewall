@@ -24,7 +24,7 @@ func CreateCollectionItem(collectionName string, d bson.D) (result *mongo.Insert
 }
 
 func GetAllCollectionItems(collectionName string, c echo.Context) ([]bson.M, error) {
-	var asns []bson.M
+	var data []bson.M
 
 	collection := MongoDB.Collection(collectionName)
 
@@ -40,14 +40,14 @@ func GetAllCollectionItems(collectionName string, c echo.Context) ([]bson.M, err
 	for cursor.Next(ctx) {
 		var asn bson.M
 		_ = cursor.Decode(&asn)
-		asns = append(asns, asn)
+		data = append(data, asn)
 	}
 	if err := cursor.Err(); err != nil {
 		c.Response().WriteHeader(http.StatusInternalServerError)
 		_, _ = c.Response().Write([]byte(`{ "message": "` + err.Error() + `" }`))
 		return nil, err
 	}
-	return asns, err
+	return data, err
 }
 
 func GetCollectionItemById(collectionName string, c echo.Context) (result bson.M, err error) {
@@ -80,18 +80,17 @@ func DeleteCollectionItemById(collectionName string, c echo.Context) (result bso
 	return result, nil
 }
 
-func UpdateCollectionItemById(collectionName string, c echo.Context, data bson.D) (result *mongo.UpdateResult, err error) {
+func UpdateCollectionItemById(collectionName string, c echo.Context, id bson.D, data bson.D) (result *mongo.UpdateResult, err error) {
 	collection := MongoDB.Collection(collectionName)
+
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result, err = collection.UpdateOne(
 		ctx,
-		bson.D{
-			{"_id", c.Param("id")},
-		},
+		id,
 		bson.D{
 			{"$set", data},
 		},
 	)
 
-	return result, err
+	return
 }

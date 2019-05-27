@@ -1,0 +1,101 @@
+<template>
+    <div id="pageTable">
+        <v-container grid-list-xl fluid>
+            <v-layout row wrap>
+                <v-flex sm12 v-if="errors.length > 0">
+                    <div class="v-alert error"><i aria-hidden="true" class="v-icon fa fa fa fa-exclamation-triangle theme--light v-alert__icon"></i><div>
+                        <ul>
+                            <li v-for="error in errors" v-if="error !== null">
+                                {{ error }}
+                            </li>
+                        </ul>
+                    </div></div>
+
+                </v-flex>
+                <v-flex sm12>
+                    <h3>Complex Table</h3>
+                </v-flex>
+                <v-flex lg12>
+                    <v-card>
+                        <v-toolbar card color="white">
+                            <v-text-field
+                                    flat
+                                    solo
+                                    prepend-icon="search"
+                                    placeholder="Type something"
+                                    v-model="search"
+                                    hide-details
+                                    class="hidden-sm-and-down"
+                            ></v-text-field>
+                            <v-btn icon>
+                                <v-icon>filter_list</v-icon>
+                            </v-btn>
+                        </v-toolbar>
+                        <v-divider></v-divider>
+                        <v-card-text class="pa-0">
+                            <v-data-table
+                                    :headers="headers"
+                                    :search="search"
+                                    :items="items"
+                                    :rows-per-page-items="[10,25,50,{text:'All','value':-1}]"
+                                    class="elevation-1"
+                                    item-key="name"
+                            >
+                                <template slot="items" slot-scope="props">
+                                    <td>{{ props.item.value }}</td>
+                                    <td>{{ props.item.status }}</td>
+                                    <td>
+                                        <v-btn depressed outline icon fab dark color="primary" small>
+                                            <v-icon>edit</v-icon>
+                                            {{ props.item._id }}
+                                        </v-btn>
+                                        <v-btn depressed outline icon fab dark color="pink" small>
+                                            <v-icon>delete</v-icon>
+                                        </v-btn>
+                                    </td>
+                                </template>
+                            </v-data-table>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+
+            </v-layout>
+        </v-container>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                search: '',
+                    headers: [
+                        {
+                            text: 'ASN',
+                            value: 'value'
+                        },
+                        {
+                            text: 'Status',
+                            value: 'status'
+                        },
+                        {
+                            text: 'Action',
+                            value: ''
+                        },
+                    ],
+                    items: [],
+                    errors: []
+            };
+        },
+        created() {
+            this.apiCall('get', this.getApiUrl('/manage/asns/all'))
+                .then(response => {
+                    response.status === 200 ? this.items = response.data : this.errors = response.data
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                    //alert(this.errors)
+                })
+        }
+    };
+</script>
