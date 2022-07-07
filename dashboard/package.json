@@ -24,7 +24,7 @@
     "hideseek": "^0.7.0",
     "http-server": "^0.9.0",
     "jquery": "^2.2.2",
-    "moment": "^2.12.0",
+    "moment": "^2.29.4",
     "vue": "^2.2.2",
     "vue-date-picker": "^1.0.2",
     "vue-resource": "^1.0.3",
